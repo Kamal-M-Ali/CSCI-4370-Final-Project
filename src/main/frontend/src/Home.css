@@ -1,0 +1,28 @@
+.banner {
+    padding: 2% 0;
+    background-color: #9575CD;
+    text-align: center;
+    text-shadow: 3px 3px 2px #474747;
+    color: #e2dfdf;
+    font-size: 2em;
+}
+
+.banner-underline {
+    padding: 0;
+    margin: 0;
+    border-color: black;
+}
+
+.about-section {
+    margin: auto;
+    padding: 16px;
+}
+
+.about-section hr {
+    border: 4px black;
+    border-style: none none double;
+}
+
+.about-section p {
+    font-size: large;
+}

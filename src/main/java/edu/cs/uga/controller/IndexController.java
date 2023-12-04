@@ -1,4 +1,4 @@
-package edu.cs.uga;
+package edu.cs.uga.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

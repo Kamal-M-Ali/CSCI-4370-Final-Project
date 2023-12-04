@@ -1,0 +1,74 @@
+.account-page {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 20%;
+    text-align: center;
+    margin: 2em auto;
+    padding: 1.5rem;
+    background-color: #E0E0E0;
+}
+
+.account-error {
+    text-align: center;
+}
+
+.account-page hr {
+    margin-top: 16px;
+    width: 96%;
+    display: block;
+    background-color:black;
+    height: 4px;
+}
+
+.account-page label {
+    font-weight: bold;
+    font-size: 1.4em;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.account-page input {
+    font: inherit;
+    padding: 1rem;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    border: 1px solid #B0BEC5;
+    background-color: #ECEFF1;
+    width: 90%;
+}
+
+.account-btn {
+    text-decoration: none;
+}
+.account-btn button {
+    cursor: pointer;
+    margin-top: 2rem;
+    width: 60%;
+    padding: 1rem 2rem;
+    border: 1px solid #512DA8;
+    background-color: #B39DDB;
+    color: #e6e6e6;
+    border-radius: 4px;
+
+    font-weight: bold;
+    font-size: 1.2em;
+}
+.account-btn button:hover,
+.account-btn button:active {
+    background-color: #9575CD;
+}
+
+.account-link {
+    text-decoration: underline;
+    font-size: 1.2em;
+    color: black;
+}
+.account-link:hover {
+    color: #0277BD;
+}
+
+.logout {
+    margin: auto;
+    width: 20%
+}
