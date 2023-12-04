@@ -6,7 +6,7 @@ export default function Home()
     return (<>
         <Navigation />
         <div className='banner'>
-            <h1>Review Site</h1>
+            <h1>✰ Review Site ✰</h1>
         </div>
         <hr className='banner-underline'/>
         <div className='about-section'>

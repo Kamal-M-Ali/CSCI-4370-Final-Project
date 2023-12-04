@@ -1,0 +1,27 @@
+.admin-btns {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    justify-content: space-between;
+    text-align: center;
+    padding: 2em;
+    background-color: #cccccc;
+    margin-left: 16px;
+    margin-right: 16px;
+}
+
+.admin-btn {
+    cursor: pointer;
+    padding: 1.5rem;
+    border: 1px solid #512DA8;
+    background-color: #B39DDB;
+    color: #E0E0E0;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 2em;
+    font-weight: normal;
+}
+.admin-btn:hover,
+.admin-btn :active {
+    background-color: #9575CD;
+}

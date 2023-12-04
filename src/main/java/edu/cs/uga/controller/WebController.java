@@ -1,8 +1,7 @@
 package edu.cs.uga.controller;
 
-import edu.cs.uga.data.Login;
+import edu.cs.uga.data.*;
 import edu.cs.uga.service.ApiService;
-import edu.cs.uga.data.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -41,4 +40,23 @@ public class WebController {
         return apiService.changePassword(userId, password);
     }
 
+    @PutMapping("/api/admin/add-game/:{userId}")
+    public ResponseEntity<String> addBook(@PathVariable int userId, @RequestBody Game game) {
+        return apiService.addGame(userId, game);
+    }
+
+    @PutMapping("/api/admin/add-movie/:{userId}")
+    public ResponseEntity<String> addMovie(@PathVariable int userId, @RequestBody Movie movie) {
+        return apiService.addMovie(userId, movie);
+    }
+
+    @PutMapping("/api/admin/add-show/:{userId}")
+    public ResponseEntity<String> addShow(@PathVariable int userId, @RequestBody TvShow tvShow) {
+        return apiService.addShow(userId, tvShow);
+    }
+
+    @PutMapping("/api/admin/add-book/:{userId}")
+    public ResponseEntity<String> addBook(@PathVariable int userId, @RequestBody Book book) {
+        return apiService.addBook(userId, book);
+    }
 }

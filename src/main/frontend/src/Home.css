@@ -1,6 +1,6 @@
 .banner {
     padding: 2% 0;
-    background-color: #9575CD;
+    background-color: #212121;
     text-align: center;
     text-shadow: 3px 3px 2px #474747;
     color: #e2dfdf;
@@ -9,8 +9,8 @@
 
 .banner-underline {
     padding: 0;
-    margin: 0;
     border-color: black;
+    margin: 0 0 16px;
 }
 
 .about-section {

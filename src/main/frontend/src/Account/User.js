@@ -97,32 +97,37 @@ export default function User() {
                     <div>
                         <p>Email: {accountDetails.email}</p>
                         <p>Profile name: {accountDetails.profile_name}</p>
-                        <button className='account-edit-btn' onClick={() => setEditInfo(true)}>Edit account info</button>
+                        <div className='account-btn'>
+                            <button onClick={() => setEditInfo(true)}>Edit account info</button>
+                        </div>
                     </div>
                     :
                     <form onSubmit={changeInfo}>
                         <input type='text' name='email' placeholder='Email' />
                         <input type='text' name='name' placeholder='Profile name' />
-
-                        <button className='account-btn' type='submit'>Finish</button>
+                        <div className='account-btn'>
+                            <button type='submit'>Finish</button>
+                        </div>
                     </form>
                 }
                 <hr/>
 
                 <h1>Password</h1>
                 {(!editPswd) ?
-                    <div>
-                        <button className='account-edit-btn' onClick={() => setEditPswd(true)}>Change Password</button>
+                    <div className='account-btn'>
+                        <button onClick={() => setEditPswd(true)}>Change Password</button>
                     </div>
                     :
                     <form onSubmit={changePassword}>
                         <input type='password' name='password1' placeholder='New Password' required />
                         <input type='password' name='password2' placeholder='Confirm Password' required />
-                        <button className='account-btn' type='submit'>Change</button>
+                        <div className='account-btn'>
+                            <button type='submit'>Change</button>
+                        </div>
                     </form>
                 }
                 <hr/>
-                <Link className='account-btn' to={'/profile/:' + sessionStorage.getItem('userId')}>View profile</Link>
+                <Link to={'/profile/:' + sessionStorage.getItem('userId')}>View profile</Link>
             </Card>)
             :
             (<div className='account-error'>
@@ -130,6 +135,5 @@ export default function User() {
                 <h1>Login to view/edit account details.</h1>
             </div>)
         }
-
     </>);
 }

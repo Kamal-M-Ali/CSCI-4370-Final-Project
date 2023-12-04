@@ -1,7 +1,6 @@
 package edu.cs.uga.service;
 
-import edu.cs.uga.data.Login;
-import edu.cs.uga.data.User;
+import edu.cs.uga.data.*;
 import org.springframework.http.ResponseEntity;
 
 import java.sql.PreparedStatement;
@@ -38,22 +37,16 @@ public class ApiService {
             smnt.setString(2, pw.encryptPassword(user.getPassword()));
             smnt.setString(3, user.getProfile_name());
             smnt.execute();
-            if (smnt.getUpdateCount() <= 0)
-                return ResponseEntity.badRequest().body("Failed to insert into users.");
         } catch (SQLException e) {
             return db.log(e);
         }
 
         // return the user id of the user just created
-        try (PreparedStatement smnt = db.getConnection().prepareStatement(
-                "SELECT user_id " +
-                "FROM users " +
-                "WHERE email=?")) {
-            smnt.setString(1, user.getEmail());
+        try (PreparedStatement smnt = db.getConnection().prepareStatement("SELECT LAST_INSERT_ID()")) {
             ResultSet rs = smnt.executeQuery();
 
             if (rs.next())
-                return ResponseEntity.ok(Integer.toString(rs.getInt("user_id")));
+                return ResponseEntity.ok(Integer.toString(rs.getInt(1)));
         } catch (SQLException e) {
             return db.log(e);
         }
@@ -147,5 +140,144 @@ public class ApiService {
         }
 
         return ResponseEntity.status(404).body("Could not find user.");
+    }
+
+    public ResponseEntity<String> addGame(int userId, Game game) {
+        DatabaseService db = DatabaseService.getInstance();
+
+        // add to game table
+        if (checkUser(userId) && addMedia(game)) {
+            // add to game table
+            try (PreparedStatement smnt = db.getConnection().prepareStatement(
+                    "INSERT INTO game (game_id,release_date,developers,platforms,plays) " +
+                            "VALUES((SELECT LAST_INSERT_ID()), ?, ?, ?, ?)")) {
+                smnt.setDate(1, game.getRelease_date());
+                smnt.setString(2, game.getDevelopers());
+                smnt.setString(3, game.getPlatforms());
+                smnt.setInt(4, game.getPlays());
+                smnt.execute();
+                if (smnt.getUpdateCount() == 1)
+                    return ResponseEntity.ok("Successfully added game.");
+            } catch (SQLException e) {
+                return db.log(e);
+            }
+        }
+
+        return ResponseEntity.internalServerError().body("Failed to add game.");
+    }
+
+    public ResponseEntity<String> addMovie(int userId, Movie movie) {
+        DatabaseService db = DatabaseService.getInstance();
+
+        if (checkUser(userId) && addMedia(movie)) {
+            // add to movie table
+            try (PreparedStatement smnt = db.getConnection().prepareStatement(
+                    "INSERT INTO movie (movie_id,homepage,budget,production,runtime,release_date) " +
+                            "VALUES((SELECT LAST_INSERT_ID()), ?, ?, ?, ?, ?)")) {
+                smnt.setString(1, movie.getHomepage());
+                smnt.setLong(2, movie.getBudget());
+                smnt.setString(3, movie.getProduction());
+                smnt.setInt(4, movie.getRuntime());
+                smnt.setDate(5, movie.getRelease_date());
+                smnt.execute();
+                if (smnt.getUpdateCount() == 1)
+                    return ResponseEntity.ok("Successfully added movie.");
+            } catch (SQLException e) {
+                return db.log(e);
+            }
+        }
+
+        return ResponseEntity.internalServerError().body("Failed to add movie.");
+    }
+
+    public ResponseEntity<String> addShow(int userId, TvShow tvShow) {
+        DatabaseService db = DatabaseService.getInstance();
+
+        // add to game table
+        if (checkUser(userId) && addMedia(tvShow)) {
+            // add to game table
+            try (PreparedStatement smnt = db.getConnection().prepareStatement(
+                    "INSERT INTO game (tv_show_id,num_seasons,num_episodes,is_adult,first_air_date,last_air_date,homepage,created_by,networks) " +
+                            "VALUES((SELECT LAST_INSERT_ID()), ?, ?, ?, ?, ?, ?, ?, ?)")) {
+                smnt.setInt(1, tvShow.getNum_seasons());
+                smnt.setInt(2, tvShow.getNum_episodes());
+                smnt.setBoolean(3, tvShow.isIs_adult());
+                smnt.setDate(4, tvShow.getFirst_air_date());
+                smnt.setDate(5, tvShow.getLast_air_date());
+                smnt.setString(6, tvShow.getHomepage());
+                smnt.setString(7, tvShow.getCreated_by());
+                smnt.setString(8, tvShow.getNetworks());
+                smnt.execute();
+                if (smnt.getUpdateCount() == 1)
+                    return ResponseEntity.ok("Successfully added tv show.");
+            } catch (SQLException e) {
+                return db.log(e);
+            }
+        }
+
+        return ResponseEntity.internalServerError().body("Failed to add tv show.");
+    }
+
+    public ResponseEntity<String> addBook(int userId, Book book) {
+        DatabaseService db = DatabaseService.getInstance();
+
+        // add to game table
+        if (checkUser(userId) && addMedia(book)) {
+            // add to game table
+            try (PreparedStatement smnt = db.getConnection().prepareStatement(
+                    "INSERT INTO game (book_id,author,series,num_pages,publication_date,publishers) " +
+                            "VALUES((SELECT LAST_INSERT_ID()), ?, ?, ?, ?, ?)")) {
+                smnt.setString(1, book.getAuthor());
+                smnt.setString(2, book.getSeries());
+                smnt.setInt(3, book.getNum_pages());
+                smnt.setDate(4, book.getPublication_date());
+                smnt.setString(5, book.getPublishers());
+                smnt.execute();
+                if (smnt.getUpdateCount() == 1)
+                    return ResponseEntity.ok("Successfully added book.");
+            } catch (SQLException e) {
+                return db.log(e);
+            }
+        }
+
+        return ResponseEntity.internalServerError().body("Failed to add book.");
+    }
+
+    private boolean checkUser(int userId) {
+        DatabaseService db = DatabaseService.getInstance();
+
+        try (PreparedStatement smnt = db.getConnection().prepareStatement(
+                "SELECT user_id " +
+                        "FROM users " +
+                        "WHERE user_id=?")) {
+            smnt.setInt(1, userId);
+            ResultSet rs = smnt.executeQuery();
+            if (rs.next()) return true;
+        } catch (SQLException e) {
+            db.log(e);
+        }
+        return false;
+    }
+
+    private boolean addMedia(Media media) {
+        DatabaseService db = DatabaseService.getInstance();
+
+        try (PreparedStatement smnt = db.getConnection().prepareStatement(
+                "INSERT INTO media (title,score,summary,genres,review_count) " +
+                        "VALUES (?, ?, ?, ?, ?)")) {
+            smnt.setString(1, media.getTitle());
+            if (media.getScore() == null)
+                smnt.setNull(2, java.sql.Types.DOUBLE);
+            else
+                smnt.setDouble(2, media.getScore());
+            smnt.setString(3, media.getSummary());
+            smnt.setString(4, media.getGenres());
+            smnt.setInt(5, media.getReview_count());
+            smnt.execute();
+            return true;
+        } catch (SQLException e) {
+            db.log(e);
+        }
+        return false;
     }
 }
