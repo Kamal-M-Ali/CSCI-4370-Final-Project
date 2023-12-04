@@ -52,9 +52,9 @@ export default function AddBook() {
                     <input type='number' step='0.1' max='5' min='0' name='score' placeholder='Score'/>
                     <input type='text' name='summary' placeholder='Summary' required/>
                     <input type='text' name='genres' placeholder='Genres' required/>
-                    <input type='number' step='1' min='0' name='reviewCount' placeholder='Review count'/>
+                    <input type='number' step='1' min='0' name='reviewCount' placeholder='Review count' required/>
                     <input type='text' name='author' placeholder='Author' required/>
-                    <input type='text' name='series' placeholder='Series'/>
+                    <input type='text' name='series' placeholder='Series' required/>
                     <input type='number' step='1' min='1' name='pages' placeholder='Number of pages' required/>
                     <input type='text' name='publication' placeholder='Publication date (yyyy-mm-dd)' required/>
                     <input type='text' name='publishers' placeholder='Publishers' required/>

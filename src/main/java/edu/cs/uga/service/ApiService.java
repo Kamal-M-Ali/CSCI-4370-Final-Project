@@ -1,11 +1,14 @@
 package edu.cs.uga.service;
 
 import edu.cs.uga.data.*;
+import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Service class for handling endpoints.
@@ -279,5 +282,30 @@ public class ApiService {
             db.log(e);
         }
         return false;
+    }
+
+    public ResponseEntity<?> getAllMedia(String mediaType) {
+        DatabaseService db = DatabaseService.getInstance();
+        List<Media> media = new ArrayList<>();
+
+        try (PreparedStatement smnt = db.getConnection().prepareStatement(
+                "SELECT media_id,title,score,summary,genres,review_count " +
+                "FROM media JOIN " + mediaType + " ON media_id=" + mediaType + "_id")) {
+            ResultSet rs = smnt.executeQuery();
+
+            while (rs.next()) {
+                Media mediaObject = new Media(rs.getString("title"),
+                        rs.getDouble("score"),
+                        rs.getString("summary"),
+                        rs.getString("genres"),
+                        rs.getInt("review_count"));
+                mediaObject.setMedia_id(rs.getInt("media_id"));
+                media.add(mediaObject);
+            }
+        } catch (SQLException e) {
+            return db.log(e);
+        }
+
+        return ResponseEntity.ok(media);
     }
 }

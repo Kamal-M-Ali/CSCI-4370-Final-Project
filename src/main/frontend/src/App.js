@@ -9,6 +9,7 @@ import AddGame from "./Admin/AddGame";
 import AddMovie from "./Admin/AddMovie";
 import AddShow from "./Admin/AddShow";
 import AddBook from "./Admin/AddBook";
+import Browse from "./Media/Browse";
 import ErrorPage from './ErrorPage';
 
 export default function App() {
@@ -24,6 +25,10 @@ export default function App() {
                 <Route path='admin/movie' element={<AddMovie/>}/>
                 <Route path='admin/show' element={<AddShow/>}/>
                 <Route path='admin/book' element={<AddBook/>}/>
+                <Route path='games' element={<Browse/>}/>
+                <Route path='books' element={<Browse/>}/>
+                <Route path='movies' element={<Browse/>}/>
+                <Route path='shows' element={<Browse/>}/>
                 <Route path='*' element={<ErrorPage/>}/>
             </Routes>
         </Router>

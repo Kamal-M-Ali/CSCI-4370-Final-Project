@@ -1,0 +1,37 @@
+.browse {
+    padding: 16px;
+    text-align: center;
+}
+
+.search-container {
+    margin: 12px;
+}
+
+.searchbar {
+    text-align: center  ;
+    font-size: 1.6em;
+    padding: 12px 0;
+    border-radius: 6px;
+    background-color: #ECEFF1;
+    border: 1px solid #B0BEC5;
+    width: 100%;
+}
+
+.search-criteria {
+    display: flex;
+    text-align: center;
+    flex-direction: row;
+    justify-content: left;
+    gap: 12px;
+}
+
+.search-criteria h3 {
+    margin: 12px;
+    font-size: 1.2em;
+}
+
+.search-criteria label {
+    margin: auto 0px;
+    font-size: 1.2em;
+    display: block;
+}

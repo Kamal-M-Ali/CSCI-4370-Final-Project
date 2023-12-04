@@ -1,6 +1,6 @@
 package edu.cs.uga.data;
 
-public abstract class Media {
+public class Media {
     private int media_id;
     private String title;
     private Double score;

@@ -6,6 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * Controller class for mapping endpoints to service code.
  */
@@ -58,5 +60,10 @@ public class WebController {
     @PutMapping("/api/admin/add-book/:{userId}")
     public ResponseEntity<String> addBook(@PathVariable int userId, @RequestBody Book book) {
         return apiService.addBook(userId, book);
+    }
+
+    @GetMapping("/api/media/:{mediaType}")
+    public ResponseEntity<?> getAllGames(@PathVariable String mediaType) {
+        return apiService.getAllMedia(mediaType);
     }
 }

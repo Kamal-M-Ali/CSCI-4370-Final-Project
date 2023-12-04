@@ -1,7 +1,6 @@
 import './Admin.css';
 import { Link } from 'react-router-dom';
 import Card from '../Card';
-import Navigation from "../Navigation";
 
 export default function Admin() {
 

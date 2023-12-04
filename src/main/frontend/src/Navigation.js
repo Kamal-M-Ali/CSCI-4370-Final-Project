@@ -19,16 +19,16 @@ export default function Navigation(props)
             </p>
             <ul>
                 <li key='games'>
-                    <Link className='nav-link' to='/games'>Games</Link>
+                    <Link className='nav-link' to='/games' state={{mediaType: 'game'}}>Games</Link>
                 </li>
                 <li key='books'>
-                    <Link className='nav-link' to='/books'>Books</Link>
+                    <Link className='nav-link' to='/books' state={{mediaType: 'book'}}>Books</Link>
                 </li>
                 <li key='movies'>
-                    <Link className='nav-link' to='/movies'>Movies</Link>
+                    <Link className='nav-link' to='/movies' state={{mediaType: 'movie'}}>Movies</Link>
                 </li>
                 <li key='shows'>
-                    <Link className='nav-link' to='/shows'>Shows</Link>
+                    <Link className='nav-link' to='/shows' state={{mediaType: 'tv_show'}}>Shows</Link>
                 </li>
                 <li key='forum'>
                     <Link className='nav-link' to='/forum'>Forum</Link>

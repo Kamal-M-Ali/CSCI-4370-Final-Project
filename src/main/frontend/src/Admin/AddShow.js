@@ -55,12 +55,12 @@ export default function AddBook() {
                     <input type='number' step='0.1' max='5' min='0' name='score' placeholder='Score'/>
                     <input type='text' name='summary' placeholder='Summary' required/>
                     <input type='text' name='genres' placeholder='Genres' required/>
-                    <input type='number' step='1' min='0' name='reviewCount' placeholder='Review count'/>
+                    <input type='number' step='1' min='0' name='reviewCount' placeholder='Review count' required/>
                     <input type='number' step='1' min='1' name='numSeasons' placeholder='Number of seasons' required/>
                     <input type='number' step='1' min='1' name='numEpisodes' placeholder='Number of episodes' required/>
-                    <input type='text' name='isAdult' placeholder='Is adult ("true" or "false")'/>
+                    <input type='text' name='isAdult' placeholder='Is adult ("true" or "false")' required/>
                     <input type='text' name='firstAirDate' placeholder='First air date (yyyy-mm-dd)' required/>
-                    <input type='text' name='lastAirDate' placeholder='Last air date (yyyy-mm-dd)'/>
+                    <input type='text' name='lastAirDate' placeholder='Last air date (yyyy-mm-dd)' required/>
                     <input type='text' name='homepage' placeholder='Homepage' required/>
                     <input type='text' name='createdBy' placeholder='Created by' required/>
                     <input type='text' name='networks' placeholder='Networks' required/>
