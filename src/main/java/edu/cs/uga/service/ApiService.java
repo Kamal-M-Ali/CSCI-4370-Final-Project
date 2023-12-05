@@ -14,6 +14,24 @@ import java.util.List;
  * Service class for handling endpoints.
  */
 public class ApiService {
+    public ResponseEntity<String> total() {
+        DatabaseService db = DatabaseService.getInstance();
+
+        try (PreparedStatement smnt = db.getConnection().prepareStatement(
+                "SELECT COUNT(media_id) AS ? " +
+                        "FROM media")) {
+            smnt.setString(1, "media_total");
+            ResultSet rs = smnt.executeQuery();
+
+            if (rs.next()) {
+                return ResponseEntity.ok(Integer.toString(rs.getInt("media_total")));
+            }
+        } catch (SQLException e) {
+            return db.log(e);
+        }
+
+        return ResponseEntity.internalServerError().body("Failed to count media.");
+    }
     public ResponseEntity<String> register(User user) {
         DatabaseService db = DatabaseService.getInstance();
 
@@ -284,13 +302,23 @@ public class ApiService {
         return false;
     }
 
-    public ResponseEntity<?> getAllMedia(String mediaType) {
+    public ResponseEntity<?> getAllMedia(String mediaType, String sort, String searchTerm) {
         DatabaseService db = DatabaseService.getInstance();
         List<Media> media = new ArrayList<>();
 
+        String order = "title ASC";
+        switch (sort) {
+            case "ratingh" -> order = "score DESC";
+            case "ratingl" -> order = "score ASC";
+        }
+
         try (PreparedStatement smnt = db.getConnection().prepareStatement(
                 "SELECT media_id,title,score,summary,genres,review_count " +
-                "FROM media JOIN " + mediaType + " ON media_id=" + mediaType + "_id")) {
+                "FROM media JOIN " + mediaType + " ON media_id=" + mediaType + "_id " +
+                "WHERE title LIKE ? " +
+                "ORDER BY " + order)) {
+            smnt.setString(1, "%" + searchTerm + "%");
+
             ResultSet rs = smnt.executeQuery();
 
             while (rs.next()) {

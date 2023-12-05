@@ -17,6 +17,11 @@ public class WebController {
     private final ApiService apiService;
     WebController() { apiService = new ApiService(); }
 
+    @GetMapping("/api/total")
+    public ResponseEntity<String> total() {
+        return apiService.total();
+    }
+
     @PostMapping("/api/register")
     public ResponseEntity<String> register(@RequestBody User user) {
         return apiService.register(user);
@@ -63,7 +68,7 @@ public class WebController {
     }
 
     @GetMapping("/api/media/:{mediaType}")
-    public ResponseEntity<?> getAllGames(@PathVariable String mediaType) {
-        return apiService.getAllMedia(mediaType);
+    public ResponseEntity<?> getAllGames(@PathVariable String mediaType, @RequestParam String sort, @RequestParam String searchTerm) {
+        return apiService.getAllMedia(mediaType, sort, searchTerm);
     }
 }
