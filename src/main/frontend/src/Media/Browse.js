@@ -12,27 +12,21 @@ export default function Browse() {
     const [media, setMedia] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [sortState, setSortState] = useState('a-z');
-    const [lastUpdate, setLastUpdate] = useState(0);
-
     function fetch() {
+        let ignore = false;
+
         setMedia([]);
-        const began = Date.now();
-        axios
-            .get('http://localhost:8080/api/media/:' + mediaType, {
+        async function fetchData() {
+            const res = await axios('http://localhost:8080/api/media/:' + mediaType, {
                 params: {
                     sort: sortState,
                     searchTerm: searchTerm
                 }
-            })
-            .then((res) => {
-                if (began > lastUpdate) {
-                    setLastUpdate(Date.now())
-                    setMedia(res.data.length === 0 ? null : res.data);
-                }
-            })
-            .catch((err) => {
-                console.log('Error getting items');
             });
+            if (!ignore) setMedia(res.data.length === 0 ? null : res.data);
+        }
+        fetchData().catch((e) => { console.log(e); });
+        return () => { ignore = true; }
     }
     useEffect(fetch, [mediaType, searchTerm, sortState]);
 
