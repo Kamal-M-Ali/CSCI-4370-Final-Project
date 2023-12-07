@@ -1,6 +1,6 @@
 import './App.css';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Home from './Home';
+import Home from "./Home";
 import Signup from "./Account/Signup";
 import Login from "./Account/Login";
 import User from "./Account/User";
@@ -13,6 +13,7 @@ import Browse from "./Media/Browse";
 import View from "./Media/View";
 import Profile from "./Account/Profile";
 import Reviews from "./Media/Reviews";
+import ForumHome from "./Forum/ForumHome";
 import ErrorPage from './ErrorPage';
 
 export default function App() {
@@ -34,7 +35,8 @@ export default function App() {
                 <Route path='shows' element={<Browse/>}/>
                 <Route path='view/:mediaType/:mediaId' element={<View/>}/>
                 <Route path='view/profile/:userId' element={<Profile/>}/>
-                <Route path='reviews/:mediaType/:mediaId' element={<Reviews/>}></Route>
+                <Route path='reviews/:mediaType/:mediaId' element={<Reviews/>}/>
+                <Route path='forum' element={<ForumHome/>}/>
                 <Route path='*' element={<ErrorPage/>}/>
             </Routes>
         </Router>

@@ -36,11 +36,9 @@ export default function Profile() {
     return (<>
         <Navigation />
         <div className='profile-header-container'>
-            <Card className='profile-header'>
-                <h1>User {profile ? profile.profile_name : ''}</h1>
-                <hr/>
-                <p>Welcome to my profile!</p>
-            </Card>
+            <h1>{profile ? profile : 'User'}'s profile</h1>
+            <hr/>
+            <p>Welcome to my profile!</p>
         </div>
         <div className='profile-page'>
             <Card className='profile-section'>

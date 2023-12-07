@@ -560,7 +560,7 @@ public class ApiService {
                     while (rs2.next()) {
                         Comment comment = new Comment();
                         comment.setExtra(rs2.getString("title"));
-                        comment.setCreated(rs2.getTimestamp("created"));
+                        comment.setCreated(rs2.getDate("created"));
                         comment.setBody(rs2.getString("body"));
                         comments.add(comment);
                     }
