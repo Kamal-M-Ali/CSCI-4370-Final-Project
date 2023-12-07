@@ -15,7 +15,7 @@ export default function AddBook() {
         if (userId) {
             axios.put("http://localhost:8080/api/admin/add-book/:" + userId, {
                 title: e.target.title.value,
-                score: e.target.score.value,
+                score: (e.target.score.value ? e.target.score.value : -1.0),
                 summary: e.target.summary.value,
                 genres: e.target.genres.value,
                 review_count: e.target.reviewCount.value,
@@ -54,7 +54,7 @@ export default function AddBook() {
                     <input type='text' name='genres' placeholder='Genres' required/>
                     <input type='number' step='1' min='0' name='reviewCount' placeholder='Review count' required/>
                     <input type='text' name='author' placeholder='Author' required/>
-                    <input type='text' name='series' placeholder='Series' required/>
+                    <input type='text' name='series' placeholder='Series'/>
                     <input type='number' step='1' min='1' name='pages' placeholder='Number of pages' required/>
                     <input type='text' name='publication' placeholder='Publication date (yyyy-mm-dd)' required/>
                     <input type='text' name='publishers' placeholder='Publishers' required/>

@@ -15,7 +15,7 @@ export default function AddBook() {
         if (userId) {
             axios.put("http://localhost:8080/api/admin/add-game/:" + userId, {
                 title: e.target.title.value,
-                score: e.target.score.value,
+                score: (e.target.score.value ? e.target.score.value : -1.0),
                 summary: e.target.summary.value,
                 genres: e.target.genres.value,
                 review_count: e.target.reviewCount.value,

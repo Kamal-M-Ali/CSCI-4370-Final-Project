@@ -221,7 +221,7 @@ public class ApiService {
         if (checkUser(userId) && addMedia(tvShow)) {
             // add to game table
             try (PreparedStatement smnt = db.getConnection().prepareStatement(
-                    "INSERT INTO game (tv_show_id,num_seasons,num_episodes,is_adult,first_air_date,last_air_date,homepage,created_by,networks) " +
+                    "INSERT INTO tv_show (tv_show_id,num_seasons,num_episodes,is_adult,first_air_date,last_air_date,homepage,created_by,networks) " +
                     "VALUES((SELECT LAST_INSERT_ID()), ?, ?, ?, ?, ?, ?, ?, ?)")) {
                 smnt.setInt(1, tvShow.getNum_seasons());
                 smnt.setInt(2, tvShow.getNum_episodes());
@@ -249,7 +249,7 @@ public class ApiService {
         if (checkUser(userId) && addMedia(book)) {
             // add to game table
             try (PreparedStatement smnt = db.getConnection().prepareStatement(
-                    "INSERT INTO game (book_id,author,series,num_pages,publication_date,publishers) " +
+                    "INSERT INTO book (book_id,author,series,num_pages,publication_date,publishers) " +
                     "VALUES((SELECT LAST_INSERT_ID()), ?, ?, ?, ?, ?)")) {
                 smnt.setString(1, book.getAuthor());
                 smnt.setString(2, book.getSeries());
@@ -411,7 +411,7 @@ public class ApiService {
                 // get reviews
                 try (PreparedStatement getReviews = db.getConnection().prepareStatement(
                         "SELECT review_id,body,score,media_id,user_id,created,profile_name " +
-                        "FROM media NATURAL JOIN media_review NATURAL JOIN review NATURAL JOIN users " +
+                        "FROM review NATURAL JOIN media_review NATURAL JOIN users " +
                         "WHERE media_id=?")) {
                     getReviews.setInt(1, mediaId);
                     ResultSet rs2 = getReviews.executeQuery();
@@ -436,7 +436,7 @@ public class ApiService {
                 // get comments
                 try (PreparedStatement getComments = db.getConnection().prepareStatement(
                         "SELECT comment_id,body,media_id,user_id,created,profile_name " +
-                        "FROM media NATURAL JOIN media_comment NATURAL JOIN comments NATURAL JOIN users " +
+                        "FROM comments NATURAL JOIN media_comment NATURAL JOIN users " +
                         "WHERE media_id=?")) {
                     getComments.setInt(1, mediaId);
                     ResultSet rs3 = getComments.executeQuery();
@@ -620,7 +620,7 @@ public class ApiService {
 
         try (PreparedStatement smnt = db.getConnection().prepareStatement(
                 "SELECT * " +
-                "FROM forum NATURAL JOIN thread " +
+                "FROM forum NATURAL JOIN thread NATURAL JOIN users " +
                 "WHERE category=?")) {
             smnt.setString(1, category);
             ResultSet rs = smnt.executeQuery();
@@ -637,6 +637,7 @@ public class ApiService {
                 );
                 post.setThread_id(rs.getInt("thread_id"));
                 post.setCategory(rs.getString("category"));
+                post.setProfile_name(rs.getString("profile_name"));
                 posts.add(post);
             }
             return ResponseEntity.ok(posts);
@@ -667,5 +668,82 @@ public class ApiService {
         }
 
         return ResponseEntity.internalServerError().body("Failed to execute query.");
+    }
+
+    public ResponseEntity<?> getPostComments(int threadId) {
+        DatabaseService db = DatabaseService.getInstance();
+
+        try (PreparedStatement smnt = db.getConnection().prepareStatement(
+                "SELECT comment_id,body,thread_id,user_id,created,profile_name " +
+                "FROM comments NATURAL JOIN thread_comment NATURAL JOIN users " +
+                "WHERE thread_id=?")) {
+            smnt.setInt(1, threadId);
+            ResultSet rs = smnt.executeQuery();
+            List<ThreadComment> comments = new ArrayList<>();
+
+            while (rs.next()) {
+                ThreadComment comment = new ThreadComment(
+                        rs.getString("body"),
+                        rs.getInt("thread_id"),
+                        rs.getInt("user_id"),
+                        rs.getDate("created"),
+                        rs.getString("profile_name")
+                );
+                comment.setComment_id(rs.getInt("comment_id"));
+                comments.add(comment);
+            }
+            return ResponseEntity.ok(comments);
+        } catch (SQLException e) {
+            return db.log(e);
+        }
+    }
+
+    public ResponseEntity<String> addCommentToThread(ThreadComment comment) {
+        DatabaseService db = DatabaseService.getInstance();
+        comment.setCreated(new Date());
+
+        try (PreparedStatement smnt = db.getConnection().prepareStatement(
+                "INSERT INTO comments (body) " +
+                "VALUES (?)")) {
+            smnt.setString(1, comment.getBody());
+            smnt.execute();
+
+            if (smnt.getUpdateCount() == 1) {
+                try (PreparedStatement smnt2 = db.getConnection().prepareStatement(
+                        "INSERT INTO thread_comment (thread_id,user_id,comment_id,created) " +
+                        "VALUES(?, ?, (SELECT LAST_INSERT_ID()), ?)")) {
+                    smnt2.setInt(1, comment.getThread_id());
+                    smnt2.setInt(2, comment.getUser_id());
+                    smnt2.setTimestamp(3, new Timestamp(comment.getCreated().getTime()));
+                    smnt2.execute();
+
+                    if (smnt2.getUpdateCount() == 1)
+                        return ResponseEntity.ok("Added comment successfully");
+                }
+            }
+        } catch (SQLException e) {
+            return db.log(e);
+        }
+
+        return ResponseEntity.internalServerError().body("Failed to add comment");
+    }
+
+    public ResponseEntity<String> deletePost(int threadId, int userId) {
+        DatabaseService db = DatabaseService.getInstance();
+
+        try (PreparedStatement smnt = db.getConnection().prepareStatement(
+                "DELETE FROM thread " +
+                "WHERE thread_id=?")) {
+            smnt.setInt(1, threadId);
+            smnt.execute();
+
+            if (smnt.getUpdateCount() == 1) {
+                return ResponseEntity.ok("Deleted post.");
+            }
+        } catch (SQLException e) {
+            return db.log(e);
+        }
+
+        return ResponseEntity.internalServerError().body("Failed to delete post.");
     }
 }

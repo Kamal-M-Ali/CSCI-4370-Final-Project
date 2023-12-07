@@ -112,4 +112,19 @@ public class WebController {
 
         return apiService.createPost(category, new Post(title, body, userId));
     }
+
+    @GetMapping("/api/forum/post/comments/:{threadId}")
+    public ResponseEntity<?> getPostComments(@PathVariable int threadId) {
+        return apiService.getPostComments(threadId);
+    }
+
+    @PutMapping("/api/forum/comment")
+    public ResponseEntity<String> addCommentToThread(@RequestBody ThreadComment comment) {
+        return apiService.addCommentToThread(comment);
+    }
+
+    @DeleteMapping("/api/forum/:{threadId}")
+    public ResponseEntity<String> deletePost(@PathVariable int threadId, @RequestParam int userId) {
+        return apiService.deletePost(threadId, userId);
+    }
 }

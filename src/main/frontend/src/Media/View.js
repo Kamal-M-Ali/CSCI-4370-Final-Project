@@ -13,7 +13,7 @@ export default function View(props) {
     const [tv_show, setTv_show] = useState(null);
     const [book, setBook] = useState(null);
     const [reviews, setReviews] = useState([]);
-    const [comments, setCommments] = useState([]);
+    const [comments, setComments] = useState([]);
     const [media, setMedia] = useState(null);
     const [rated, setRated] = useState(false);
     const [commented, setCommented] = useState(0);
@@ -42,7 +42,7 @@ export default function View(props) {
                     review_count: res.data[0].review_count
                 });
                 setReviews(res.data[1]);
-                setCommments(res.data[2]);
+                setComments(res.data[2]);
             })
             .catch((err) => {
                 console.log(err.response);
@@ -109,7 +109,7 @@ export default function View(props) {
         e.target.body.value = '';
 
         comments.push(comment);
-        setCommments(comments);
+        setComments(comments);
 
         console.log(comment);
 
@@ -135,7 +135,7 @@ export default function View(props) {
                         <h2>{media.title}</h2>
                         <hr/>
 
-                        <p><b>Rating: </b>{(media.score >= 0) ? Math.round(media.score * 100) / 100 + '/5⭐' : 'Unrated'}</p>
+                        <p><b>Rating: </b>{(media.review_count > 0) ? Math.round(media.score * 100) / 100 + '/5⭐' : 'Unrated'}</p>
                         <p>{media.summary}</p>
                         <p><b>Genres: </b>{media.genres}</p>
                         <p><b>Votes: </b>{media.review_count.toLocaleString()}</p>

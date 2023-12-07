@@ -16,6 +16,7 @@ import Reviews from "./Media/Reviews";
 import ForumHome from "./Forum/ForumHome";
 import Category from "./Forum/Category";
 import Create from "./Forum/Create";
+import Post from "./Forum/Post";
 import ErrorPage from './ErrorPage';
 
 export default function App() {
@@ -41,6 +42,7 @@ export default function App() {
                 <Route path='forum' element={<ForumHome/>}/>
                 <Route path='forum/:category' element={<Category/>}/>
                 <Route path='forum/:category/create' element={<Create/>}/>
+                <Route path='forum/post/:thread_id' element={<Post/>}/>
                 <Route path='*' element={<ErrorPage/>}/>
             </Routes>
         </Router>

@@ -15,7 +15,7 @@ export default function AddBook() {
         if (userId) {
             axios.put("http://localhost:8080/api/admin/add-show/:" + userId, {
                 title: e.target.title.value,
-                score: e.target.score.value,
+                score: (e.target.score.value ? e.target.score.value : -1.0),
                 summary: e.target.summary.value,
                 genres: e.target.genres.value,
                 review_count: e.target.reviewCount.value,
@@ -61,7 +61,7 @@ export default function AddBook() {
                     <input type='text' name='isAdult' placeholder='Is adult ("true" or "false")' required/>
                     <input type='text' name='firstAirDate' placeholder='First air date (yyyy-mm-dd)' required/>
                     <input type='text' name='lastAirDate' placeholder='Last air date (yyyy-mm-dd)' required/>
-                    <input type='text' name='homepage' placeholder='Homepage' required/>
+                    <input type='text' name='homepage' placeholder='Homepage'/>
                     <input type='text' name='createdBy' placeholder='Created by' required/>
                     <input type='text' name='networks' placeholder='Networks' required/>
 

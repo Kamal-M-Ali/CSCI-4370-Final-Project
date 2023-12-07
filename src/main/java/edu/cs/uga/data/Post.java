@@ -10,6 +10,7 @@ public class Post {
     private Date created;
     private int forum_id;
     private String category;
+    private String profile_name;
 
     public Post() {
         this.thread_id = -1;
@@ -29,6 +30,7 @@ public class Post {
         this.created = created;
         this.forum_id = forum_id;
         this.category = null;
+        this.profile_name = null;
     }
 
     public Post(String title, String body, int user_id, Date created, int forum_id) {
@@ -39,6 +41,7 @@ public class Post {
         this.created = created;
         this.forum_id = forum_id;
         this.category = null;
+        this.profile_name = null;
     }
 
     public int getThread_id() {
@@ -97,6 +100,14 @@ public class Post {
         this.category = category;
     }
 
+    public String getProfile_name() {
+        return profile_name;
+    }
+
+    public void setProfile_name(String profile_name) {
+        this.profile_name = profile_name;
+    }
+
     @Override
     public String toString() {
         return "Post{" +
@@ -107,6 +118,7 @@ public class Post {
                 ", created=" + created +
                 ", forum_id=" + forum_id +
                 ", category='" + category + '\'' +
+                ", profile_name='" + profile_name + '\'' +
                 '}';
     }
 }

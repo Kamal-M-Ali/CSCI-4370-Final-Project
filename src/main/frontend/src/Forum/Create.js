@@ -20,12 +20,14 @@ export default function Create() {
                 body: e.target.body.value
             }
         }).then((res) => {
-            alert('Created post!');
-            navigate('/forum/' + category, {
-                state: {
-                    category: category
-                }
-            });
+            if (res.status === 200) {
+                alert('Created post!');
+                navigate('/forum/' + category, {
+                    state: {
+                        category: category
+                    }
+                });
+            }
         })
             .catch((err) => {
                 console.log(err.response);

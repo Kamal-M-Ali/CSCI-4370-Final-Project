@@ -15,7 +15,7 @@ export default function AddBook() {
         if (userId) {
             axios.put("http://localhost:8080/api/admin/add-movie/:" + userId, {
                 title: e.target.title.value,
-                score: e.target.score.value,
+                score: (e.target.score.value ? e.target.score.value : -1.0),
                 summary: e.target.summary.value,
                 genres: e.target.genres.value,
                 review_count: e.target.reviewCount.value,
@@ -53,7 +53,7 @@ export default function AddBook() {
                     <input type='text' name='summary' placeholder='Summary' required/>
                     <input type='text' name='genres' placeholder='Genres' required/>
                     <input type='number' step='1' min='0' name='reviewCount' placeholder='Review count' required/>
-                    <input type='text' name='homepage' placeholder='Homepage' required/>
+                    <input type='text' name='homepage' placeholder='Homepage'/>
                     <input type='number' step='1' min='0' name='budget' placeholder='Budget' required/>
                     <input type='text' name='production' placeholder='Production' required/>
                     <input type='number' step='1' min='1' name='runtime' placeholder='Runtime' required/>
