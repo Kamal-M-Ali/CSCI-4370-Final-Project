@@ -1,13 +1,11 @@
 package edu.cs.uga.service;
 
 import edu.cs.uga.data.*;
-import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -19,7 +17,7 @@ public class ApiService {
 
         try (PreparedStatement smnt = db.getConnection().prepareStatement(
                 "SELECT COUNT(media_id) AS ? " +
-                        "FROM media")) {
+                "FROM media")) {
             smnt.setString(1, "media_total");
             ResultSet rs = smnt.executeQuery();
 
@@ -32,7 +30,8 @@ public class ApiService {
 
         return ResponseEntity.internalServerError().body("Failed to count media.");
     }
-    public ResponseEntity<String> register(User user) {
+
+    public ResponseEntity<?> register(User user) {
         DatabaseService db = DatabaseService.getInstance();
 
         // ensure email does not already exist in the database
@@ -66,8 +65,10 @@ public class ApiService {
         try (PreparedStatement smnt = db.getConnection().prepareStatement("SELECT LAST_INSERT_ID()")) {
             ResultSet rs = smnt.executeQuery();
 
-            if (rs.next())
-                return ResponseEntity.ok(Integer.toString(rs.getInt(1)));
+            if (rs.next()) {
+                String[] res = {Integer.toString(rs.getInt(1)), user.getProfile_name()};
+                return ResponseEntity.ok(res);
+            }
         } catch (SQLException e) {
             return db.log(e);
         }
@@ -75,22 +76,24 @@ public class ApiService {
         return ResponseEntity.internalServerError().body("Failed to get new user_id.");
     }
 
-    public ResponseEntity<String> login(Login login) {
+    public ResponseEntity<?> login(Login login) {
         DatabaseService db = DatabaseService.getInstance();
         PasswordService pw = new PasswordService();
 
         try (PreparedStatement smnt = db.getConnection().prepareStatement(
-                "SELECT user_id, pass " +
+                "SELECT user_id, pass, profile_name " +
                 "FROM users " +
                 "WHERE email=?")) {
             smnt.setString(1, login.getEmail());
             ResultSet rs = smnt.executeQuery();
 
             if (rs.next()) {
-                if (pw.matches(login.getPassword(), rs.getString("pass")))
-                    return ResponseEntity.ok(Integer.toString(rs.getInt("user_id")));
-                else
+                if (pw.matches(login.getPassword(), rs.getString("pass"))) {
+                    String[] res = {Integer.toString(rs.getInt(1)), rs.getString("profile_name")};
+                    return ResponseEntity.ok(res);
+                } else {
                     return ResponseEntity.status(403).body("Incorrect password.");
+                }
             }
         } catch (SQLException e) {
             return db.log(e);
@@ -104,8 +107,8 @@ public class ApiService {
 
         try (PreparedStatement smnt = db.getConnection().prepareStatement(
                 "SELECT * " +
-                        "FROM users " +
-                        "WHERE user_id=?")) {
+                "FROM users " +
+                "WHERE user_id=?")) {
             smnt.setInt(1, userId);
             ResultSet rs = smnt.executeQuery();
 
@@ -128,8 +131,8 @@ public class ApiService {
 
         try (PreparedStatement smnt = db.getConnection().prepareStatement(
                 "UPDATE users " +
-                        "SET email=?, profile_name=?" +
-                        "WHERE user_id=?")) {
+                "SET email=?, profile_name=? " +
+                "WHERE user_id=?")) {
             smnt.setString(1, email);
             smnt.setString(2, profileName);
             smnt.setInt(3, userId);
@@ -149,8 +152,8 @@ public class ApiService {
 
         try (PreparedStatement smnt = db.getConnection().prepareStatement(
                 "UPDATE users " +
-                        "SET pass=?" +
-                        "WHERE user_id=?")) {
+                "SET pass=? " +
+                "WHERE user_id=?")) {
             smnt.setString(1, pw.encryptPassword(password));
             smnt.setInt(2, userId);
             smnt.execute();
@@ -171,7 +174,7 @@ public class ApiService {
             // add to game table
             try (PreparedStatement smnt = db.getConnection().prepareStatement(
                     "INSERT INTO game (game_id,release_date,developers,platforms,plays) " +
-                            "VALUES((SELECT LAST_INSERT_ID()), ?, ?, ?, ?)")) {
+                    "VALUES((SELECT LAST_INSERT_ID()), ?, ?, ?, ?)")) {
                 smnt.setDate(1, game.getRelease_date());
                 smnt.setString(2, game.getDevelopers());
                 smnt.setString(3, game.getPlatforms());
@@ -194,7 +197,7 @@ public class ApiService {
             // add to movie table
             try (PreparedStatement smnt = db.getConnection().prepareStatement(
                     "INSERT INTO movie (movie_id,homepage,budget,production,runtime,release_date) " +
-                            "VALUES((SELECT LAST_INSERT_ID()), ?, ?, ?, ?, ?)")) {
+                    "VALUES((SELECT LAST_INSERT_ID()), ?, ?, ?, ?, ?)")) {
                 smnt.setString(1, movie.getHomepage());
                 smnt.setLong(2, movie.getBudget());
                 smnt.setString(3, movie.getProduction());
@@ -219,7 +222,7 @@ public class ApiService {
             // add to game table
             try (PreparedStatement smnt = db.getConnection().prepareStatement(
                     "INSERT INTO game (tv_show_id,num_seasons,num_episodes,is_adult,first_air_date,last_air_date,homepage,created_by,networks) " +
-                            "VALUES((SELECT LAST_INSERT_ID()), ?, ?, ?, ?, ?, ?, ?, ?)")) {
+                    "VALUES((SELECT LAST_INSERT_ID()), ?, ?, ?, ?, ?, ?, ?, ?)")) {
                 smnt.setInt(1, tvShow.getNum_seasons());
                 smnt.setInt(2, tvShow.getNum_episodes());
                 smnt.setBoolean(3, tvShow.isIs_adult());
@@ -247,7 +250,7 @@ public class ApiService {
             // add to game table
             try (PreparedStatement smnt = db.getConnection().prepareStatement(
                     "INSERT INTO game (book_id,author,series,num_pages,publication_date,publishers) " +
-                            "VALUES((SELECT LAST_INSERT_ID()), ?, ?, ?, ?, ?)")) {
+                    "VALUES((SELECT LAST_INSERT_ID()), ?, ?, ?, ?, ?)")) {
                 smnt.setString(1, book.getAuthor());
                 smnt.setString(2, book.getSeries());
                 smnt.setInt(3, book.getNum_pages());
@@ -269,8 +272,8 @@ public class ApiService {
 
         try (PreparedStatement smnt = db.getConnection().prepareStatement(
                 "SELECT user_id " +
-                        "FROM users " +
-                        "WHERE user_id=?")) {
+                "FROM users " +
+                "WHERE user_id=?")) {
             smnt.setInt(1, userId);
             ResultSet rs = smnt.executeQuery();
             if (rs.next()) return true;
@@ -285,9 +288,9 @@ public class ApiService {
 
         try (PreparedStatement smnt = db.getConnection().prepareStatement(
                 "INSERT INTO media (title,score,summary,genres,review_count) " +
-                        "VALUES (?, ?, ?, ?, ?)")) {
+                "VALUES (?, ?, ?, ?, ?)")) {
             smnt.setString(1, media.getTitle());
-            if (media.getScore() == null)
+            if (media.getScore() < 0)
                 smnt.setNull(2, java.sql.Types.DOUBLE);
             else
                 smnt.setDouble(2, media.getScore());
@@ -335,5 +338,199 @@ public class ApiService {
         }
 
         return ResponseEntity.ok(media);
+    }
+
+    public ResponseEntity<?> getMedia(String mediaType, int mediaId) {
+        DatabaseService db = DatabaseService.getInstance();
+        List<Object> list = new ArrayList<>();
+        Media object = new Media();
+
+        switch (mediaType) {
+            case "game" -> object = new Game();
+            case "movie" -> object = new Movie();
+            case "tv_show" -> object = new TvShow();
+            case "book" -> object = new Book();
+        }
+
+        try (PreparedStatement smnt = db.getConnection().prepareStatement(
+                "SELECT * " +
+                        "FROM media JOIN " + mediaType + " ON media_id=" + mediaType + "_id " +
+                        "WHERE media_id=?")) {
+            smnt.setInt(1, mediaId);
+            ResultSet rs = smnt.executeQuery();
+
+            if (rs.next()) {
+                object.setMedia_id(rs.getInt("media_id"));
+                object.setTitle(rs.getString("title"));
+                object.setScore(rs.getDouble("score"));
+                object.setSummary(rs.getString("summary"));
+                object.setGenres(rs.getString("genres"));
+                object.setReview_count(rs.getInt("review_count"));
+
+                switch (mediaType) {
+                    case "game" -> {
+                        Game game = (Game) object;
+                        game.setRelease_date(rs.getDate("release_date"));
+                        game.setDevelopers(rs.getString("developers"));
+                        game.setPlatforms(rs.getString("platforms"));
+                        game.setPlays(rs.getInt("plays"));
+                        list.add(game);
+                    }
+                    case "movie" -> {
+                        Movie movie = (Movie) object;
+                        movie.setHomepage(rs.getString("homepage"));
+                        movie.setBudget(rs.getLong("budget"));
+                        movie.setProduction(rs.getString("production"));
+                        movie.setRuntime(rs.getInt("runtime"));
+                        movie.setRelease_date(rs.getDate("release_date"));
+                        list.add(movie);
+                    }
+                    case "tv_show" -> {
+                        TvShow show = (TvShow) object;
+                        show.setNum_seasons(rs.getInt("num_seasons"));
+                        show.setNum_episodes(rs.getInt("num_episodes"));
+                        show.setIs_adult(rs.getBoolean("is_adult"));
+                        show.setFirst_air_date(rs.getDate("first_air_date"));
+                        show.setLast_air_date(rs.getDate("last_air_date"));
+                        show.setHomepage(rs.getString("homepage"));
+                        show.setCreated_by(rs.getString("created_by"));
+                        show.setNetworks(rs.getString("networks"));
+                        list.add(show);
+                    }
+                    case "book" -> {
+                        Book book = (Book) object;
+                        book.setAuthor(rs.getString("author"));
+                        book.setSeries(rs.getString("series"));
+                        book.setNum_pages(rs.getInt("num_pages"));
+                        book.setPublication_date(rs.getDate("publication_date"));
+                        book.setPublishers(rs.getString("publishers"));
+                        list.add(book);
+                    }
+                }
+
+                // get reviews
+                try (PreparedStatement getReviews = db.getConnection().prepareStatement(
+                        "SELECT review_id,body,score,media_id,user_id,created,profile_name " +
+                        "FROM media NATURAL JOIN media_review NATURAL JOIN review NATURAL JOIN users " +
+                        "WHERE media_id=?")) {
+                    getReviews.setInt(1, mediaId);
+                    ResultSet rs2 = getReviews.executeQuery();
+                    List<Review> reviews = new ArrayList<>();
+
+                    while (rs2.next()) {
+                        Review review = new Review(
+                                rs2.getString("body"),
+                                rs2.getDouble("score"),
+                                rs2.getInt("media_id"),
+                                rs2.getInt("user_id"),
+                                rs2.getDate("created"),
+                                rs2.getString("profile_name")
+                        );
+                        review.setReview_id(rs2.getInt("review_id"));
+                        reviews.add(review);
+                    }
+
+                    list.add(reviews);
+                }
+
+                // get comments
+                try (PreparedStatement getComments = db.getConnection().prepareStatement(
+                        "SELECT comment_id,body,media_id,user_id,created,profile_name " +
+                        "FROM media NATURAL JOIN media_comment NATURAL JOIN comments NATURAL JOIN users " +
+                        "WHERE media_id=?")) {
+                    getComments.setInt(1, mediaId);
+                    ResultSet rs3 = getComments.executeQuery();
+                    List<Comment> comments = new ArrayList<>();
+
+                    while (rs3.next()) {
+                        Comment comment = new Comment(
+                                rs3.getString("body"),
+                                rs3.getInt("media_id"),
+                                rs3.getInt("user_id"),
+                                rs3.getDate("created"),
+                                rs3.getString("profile_name")
+                        );
+                        comment.setComment_id(rs3.getInt("comment_id"));
+                        comments.add(comment);
+                    }
+
+                    list.add(comments);
+                }
+
+                //System.out.println(list);
+                return ResponseEntity.ok(list);
+            }
+        } catch (SQLException e) {
+            return db.log(e);
+        }
+
+        return ResponseEntity.internalServerError().body("Failed to query database.");
+    }
+
+    public ResponseEntity<?> rate(int mediaId, double score) {
+        DatabaseService db = DatabaseService.getInstance();
+
+        try (PreparedStatement smnt = db.getConnection().prepareStatement(
+                "SELECT score, review_count " +
+                "FROM media " +
+                "WHERE media_id=?")) {
+            smnt.setInt(1, mediaId);
+            ResultSet rs = smnt.executeQuery();
+
+            if (rs.next()) {
+                double oldScore = rs.getDouble("score");
+                int oldReviewCount = rs.getInt("review_count");
+
+                try (PreparedStatement upd = db.getConnection().prepareStatement(
+                        "UPDATE media " +
+                        "SET review_count=?, score=? " +
+                        "WHERE media_id=?")) {
+                    upd.setInt(1, ++oldReviewCount);
+                    double newScore = ((oldReviewCount - 1) * oldScore + score) / oldReviewCount;
+                    upd.setDouble(2, newScore);
+                    upd.setInt(3, mediaId);
+                    upd.execute();
+
+                    if (upd.getUpdateCount() == 1) {
+                        return ResponseEntity.ok(newScore);
+                    }
+                }
+
+            }
+        } catch (SQLException e) {
+            return db.log(e);
+        }
+
+        return ResponseEntity.internalServerError().body("Failed to add review");
+    }
+
+    public ResponseEntity<String> addComment(Comment comment) {
+        DatabaseService db = DatabaseService.getInstance();
+        comment.setCreated(new Date());
+
+        try (PreparedStatement smnt = db.getConnection().prepareStatement(
+                "INSERT INTO comments (body) " +
+                        "VALUES (?)")) {
+            smnt.setString(1, comment.getBody());
+            smnt.execute();
+
+            if (smnt.getUpdateCount() == 1) {
+                try (PreparedStatement smnt2 = db.getConnection().prepareStatement(
+                        "INSERT INTO media_comment (media_id,user_id,comment_id,created) " +
+                                "VALUES(?, ?, (SELECT LAST_INSERT_ID()), ?)")) {
+                    smnt2.setInt(1, comment.getMedia_id());
+                    smnt2.setInt(2, comment.getUser_id());
+                    smnt2.setTimestamp(3, new Timestamp(comment.getCreated().getTime()));
+                    smnt2.execute();
+
+                    if (smnt2.getUpdateCount() == 1)
+                        return ResponseEntity.ok("Added comment successfully");
+                }
+            }
+        } catch (SQLException e) {
+            return db.log(e);
+        }
+
+        return ResponseEntity.internalServerError().body("Failed to add comment");
     }
 }

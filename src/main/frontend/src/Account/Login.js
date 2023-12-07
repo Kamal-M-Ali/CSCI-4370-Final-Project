@@ -19,7 +19,8 @@ export default function Login() {
             password: password
         }).then((res) => {
             if (res.status === 200) {
-                sessionStorage.setItem('userId', res.data);
+                sessionStorage.setItem('userId', res.data[0]);
+                sessionStorage.setItem('profileName', res.data[1]);
                 navigate('/');
             }
         }).catch((err) => {

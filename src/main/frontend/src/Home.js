@@ -29,7 +29,7 @@ export default function Home()
                 <h2>About</h2>
                 <hr></hr>
                 <p>
-                    Welcome to our multimedia review site! There are total of {total} (and counting) individual pieces of media on the site!
+                    Welcome to our multimedia review site! There are total of {total.toLocaleString()} (and counting) individual pieces of media on the site!
                     Read user opinions on video games, movies, tv shows, and books. Discussion can be found in the forum section of the site.
                 </p>
                 <p>

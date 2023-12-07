@@ -5,10 +5,10 @@ import Card from "../Card";
 
 export default function Media(props) {
     return (
-        <Card className='book'>
-            <h2>{props.details.title}, [{props.details.score} / 5⭐]</h2>
+        <Card className='media'>
+            <h2>{props.details.title}, [{Math.round(props.details.score * 100) / 100}/5⭐]</h2>
 
-            <Link to={`/view/${props.mediaType}/${props.details.media_id}`} state={{ media: props.details }}>
+            <Link to={`/view/${props.mediaType}/${props.details.media_id}`} state={{ mediaId: props.details.media_id, mediaType: props.mediaType }}>
                 <button className='view-details-btn'>View Details</button>
             </Link>
         </Card>

@@ -1,4 +1,4 @@
-.book {
+.media {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -9,7 +9,7 @@
     width: auto;
 }
 
-.book h2 {
+.media h2 {
     font-size: 1.6em;
     font-weight: bold;
     color: black;

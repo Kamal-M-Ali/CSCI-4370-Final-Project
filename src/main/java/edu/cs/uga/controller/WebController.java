@@ -2,6 +2,7 @@ package edu.cs.uga.controller;
 
 import edu.cs.uga.data.*;
 import edu.cs.uga.service.ApiService;
+import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -23,12 +24,12 @@ public class WebController {
     }
 
     @PostMapping("/api/register")
-    public ResponseEntity<String> register(@RequestBody User user) {
+    public ResponseEntity<?> register(@RequestBody User user) {
         return apiService.register(user);
     }
 
     @PostMapping("/api/login")
-    public ResponseEntity<String> login(@RequestBody Login login) {
+    public ResponseEntity<?> login(@RequestBody Login login) {
         return apiService.login(login);
     }
 
@@ -68,7 +69,28 @@ public class WebController {
     }
 
     @GetMapping("/api/media/:{mediaType}")
-    public ResponseEntity<?> getAllGames(@PathVariable String mediaType, @RequestParam String sort, @RequestParam String searchTerm) {
+    public ResponseEntity<?> getAllMedia(@PathVariable String mediaType, @RequestParam String sort, @RequestParam String searchTerm) {
         return apiService.getAllMedia(mediaType, sort, searchTerm);
+    }
+
+    @GetMapping("/api/media/:{mediaType}/:{mediaId}")
+    public ResponseEntity<?> getMedia(@PathVariable String mediaType, @PathVariable int mediaId) {
+        return apiService.getMedia(mediaType, mediaId);
+    }
+
+    @PutMapping("/api/rate-media/:{mediaId}")
+    public ResponseEntity<?> rate(@PathVariable int mediaId, @RequestParam double score) {
+        if (score > 5)
+            return ResponseEntity.badRequest().body("Score cannot be more than 5.");
+
+        return apiService.rate(mediaId, score);
+    }
+
+    @PutMapping("/api/add-comment")
+    public ResponseEntity<String> addComment(@RequestBody Comment comment) {
+        if (comment.getUser_id() < 0 || comment.getMedia_id() < 0)
+            return ResponseEntity.badRequest().body("Missing user id and/or media id.");
+
+        return apiService.addComment(comment);
     }
 }
