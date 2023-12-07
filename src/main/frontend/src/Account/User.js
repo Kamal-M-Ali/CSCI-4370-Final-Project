@@ -127,7 +127,7 @@ export default function User() {
                     </form>
                 }
                 <hr/>
-                <Link to={'/profile/:' + sessionStorage.getItem('userId')}>View profile</Link>
+                <Link to={'/view/profile/:' + sessionStorage.getItem('userId')} state={{ userId: sessionStorage.getItem('userId')}}>View profile</Link>
             </Card>)
             :
             (<div className='account-error'>

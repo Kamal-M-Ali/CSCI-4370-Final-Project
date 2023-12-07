@@ -24,6 +24,7 @@
     border: 1px solid #512DA8;
     background-color: #B39DDB;
     color: #e6e6e6;
+    font-family: inherit;
 }
 .view-details-btn:hover,
 .view-details-btn:active {

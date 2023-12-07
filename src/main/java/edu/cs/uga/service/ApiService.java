@@ -533,4 +533,85 @@ public class ApiService {
 
         return ResponseEntity.internalServerError().body("Failed to add comment");
     }
+
+    public ResponseEntity<?> getProfile(int userId) {
+        DatabaseService db = DatabaseService.getInstance();
+        List<Object> list = new ArrayList<>();
+
+        try (PreparedStatement smnt = db.getConnection().prepareStatement(
+                "SELECT profile_name " +
+                "FROM users " +
+                "WHERE user_id=?")) {
+            smnt.setInt(1, userId);
+            ResultSet rs = smnt.executeQuery();
+
+            if (rs.next()) {
+                list.add(rs.getString("profile_name"));
+                List<Comment> comments = new ArrayList<>();
+
+                // get media comments
+                try (PreparedStatement getComments = db.getConnection().prepareStatement(
+                        "SELECT title, created, body " +
+                                "FROM comments NATURAL JOIN media_comment NATURAL JOIN media " +
+                                "WHERE user_id=?")) {
+                    getComments.setInt(1, userId);
+                    ResultSet rs2 = getComments.executeQuery();
+
+                    while (rs2.next()) {
+                        Comment comment = new Comment();
+                        comment.setExtra(rs2.getString("title"));
+                        comment.setCreated(rs2.getTimestamp("created"));
+                        comment.setBody(rs2.getString("body"));
+                        comments.add(comment);
+                    }
+                }
+
+                // get thread comments
+                try (PreparedStatement getComments = db.getConnection().prepareStatement(
+                        "SELECT title, created, comments.body " +
+                                "FROM comments NATURAL JOIN thread_comment NATURAL JOIN thread " +
+                                "WHERE user_id=?")) {
+                    getComments.setInt(1, userId);
+                    ResultSet rs2 = getComments.executeQuery();
+
+                    while (rs2.next()) {
+                        Comment comment = new Comment();
+                        comment.setExtra(rs2.getString("title"));
+                        comment.setCreated(rs2.getDate("created"));
+                        comment.setBody(rs2.getString("comments.body"));
+                        comments.add(comment);
+                    }
+                }
+
+                // add comments to response
+                list.add(comments);
+
+                // get posts
+                try (PreparedStatement getThreads = db.getConnection().prepareStatement(
+                        "SELECT title,category,created " +
+                                "FROM thread NATURAL JOIN forum " +
+                                "WHERE user_id=?")) {
+                    getThreads.setInt(1, userId);
+                    ResultSet rs2 = getThreads.executeQuery();
+                    List<Post> posts = new ArrayList<>();
+
+                    while (rs2.next()) {
+                        Post post = new Post();
+                        post.setTitle(rs2.getString("title"));
+                        post.setCategory(rs2.getString("category"));
+                        post.setCreated(rs2.getDate("created"));
+                        posts.add(post);
+                    }
+
+                    list.add(posts);
+                }
+
+                return ResponseEntity.ok(list);
+            }
+        } catch (SQLException e) {
+            return db.log(e);
+        }
+
+        return ResponseEntity.internalServerError().body("Failed to query database.");
+    }
 }

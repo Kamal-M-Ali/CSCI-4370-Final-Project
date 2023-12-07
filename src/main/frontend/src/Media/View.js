@@ -18,10 +18,7 @@ export default function View(props) {
     const [rated, setRated] = useState(false);
     const [commented, setCommented] = useState(0);
 
-    const {
-        mediaId,
-        mediaType
-    } = useLocation().state;
+    const { mediaId, mediaType } = useLocation().state;
 
     function fetchData() {
         axios.get(API + mediaType + '/:' + mediaId)

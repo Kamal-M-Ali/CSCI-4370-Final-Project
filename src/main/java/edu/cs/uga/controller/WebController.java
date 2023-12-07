@@ -93,4 +93,9 @@ public class WebController {
 
         return apiService.addComment(comment);
     }
+
+    @GetMapping("/api/view/profile/:{userId}")
+    public ResponseEntity<?> getProfile(@PathVariable int userId) {
+        return apiService.getProfile(userId);
+    }
 }
