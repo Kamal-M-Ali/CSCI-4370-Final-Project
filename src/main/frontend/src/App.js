@@ -14,6 +14,8 @@ import View from "./Media/View";
 import Profile from "./Account/Profile";
 import Reviews from "./Media/Reviews";
 import ForumHome from "./Forum/ForumHome";
+import Category from "./Forum/Category";
+import Create from "./Forum/Create";
 import ErrorPage from './ErrorPage';
 
 export default function App() {
@@ -37,6 +39,8 @@ export default function App() {
                 <Route path='view/profile/:userId' element={<Profile/>}/>
                 <Route path='reviews/:mediaType/:mediaId' element={<Reviews/>}/>
                 <Route path='forum' element={<ForumHome/>}/>
+                <Route path='forum/:category' element={<Category/>}/>
+                <Route path='forum/:category/create' element={<Create/>}/>
                 <Route path='*' element={<ErrorPage/>}/>
             </Routes>
         </Router>

@@ -50,7 +50,7 @@
     background-color: #B39DDB;
     color: #e6e6e6;
     border-radius: 4px;
-
+    font-family: inherit;
     font-weight: bold;
     font-size: 1.2em;
 }

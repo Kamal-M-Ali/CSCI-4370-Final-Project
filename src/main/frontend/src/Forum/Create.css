@@ -1,0 +1,43 @@
+.create-page {
+    padding: 16px;
+}
+
+.create-card {
+    padding: 16px;
+    background-color: #FAFAFA;
+
+}
+
+.submit-btn {
+    cursor: pointer;
+    padding: 1rem 2rem;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 1em;
+    border: 1px solid #512DA8;
+    background-color: #B39DDB;
+    color: #e6e6e6;
+    font-family: inherit;
+}
+.submit-btn:hover,
+.submit-btn:active {
+    background-color: #9575CD;
+}
+
+.thread-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.thread-title {
+    font-family: inherit;
+    font-size: 1.2em;
+    width: inherit;
+}
+
+.thread-desc {
+    font-family: inherit;
+    width: inherit;
+}
