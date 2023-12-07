@@ -36,8 +36,8 @@ export default function Category() {
             {posts.length > 0 ?
                 <div className='forum-posts'>
                     {posts.map((post, k) =>
-                        <Link to={`/forum/post/${post.thread_id}`} state={{ post: post }}>
-                            <button className='forum-post' key={k}>{post.title}</button>
+                        <Link key={k} to={`/forum/post/${post.thread_id}`} state={{ post: post }}>
+                            <button className='forum-post'>{post.title}</button>
                         </Link>
                     )}
                 </div>

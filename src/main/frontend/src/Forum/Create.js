@@ -21,7 +21,11 @@ export default function Create() {
             }
         }).then((res) => {
             alert('Created post!');
-            navigate('/forum/' + category);
+            navigate('/forum/' + category, {
+                state: {
+                    category: category
+                }
+            });
         })
             .catch((err) => {
                 console.log(err.response);

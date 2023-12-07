@@ -21,6 +21,16 @@ public class Post {
         this.category = null;
     }
 
+    public Post(String title, String body, int user_id) {
+        this.thread_id = -1;
+        this.title = title;
+        this.body = body;
+        this.user_id = user_id;
+        this.created = created;
+        this.forum_id = forum_id;
+        this.category = null;
+    }
+
     public Post(String title, String body, int user_id, Date created, int forum_id) {
         this.thread_id = -1;
         this.title = title;

@@ -4,6 +4,7 @@ import edu.cs.uga.data.*;
 import edu.cs.uga.service.ApiService;
 import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -97,5 +98,18 @@ public class WebController {
     @GetMapping("/api/view/profile/:{userId}")
     public ResponseEntity<?> getProfile(@PathVariable int userId) {
         return apiService.getProfile(userId);
+    }
+
+    @GetMapping("/api/forum/:{category}")
+    public ResponseEntity<?> getCategory(@PathVariable String category) {
+        return apiService.getCategory(category);
+    }
+
+    @PostMapping("/api/forum/create/:{category}")
+    public ResponseEntity<String> createPost(@PathVariable String category, @RequestParam int userId, @RequestParam String title, @RequestParam String body) {
+        if (userId < 0)
+            return ResponseEntity.badRequest().body("Must be signed in.");
+
+        return apiService.createPost(category, new Post(title, body, userId));
     }
 }

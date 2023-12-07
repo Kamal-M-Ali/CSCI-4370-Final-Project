@@ -614,4 +614,58 @@ public class ApiService {
 
         return ResponseEntity.internalServerError().body("Failed to query database.");
     }
+
+    public ResponseEntity<?> getCategory(String category) {
+        DatabaseService db = DatabaseService.getInstance();
+
+        try (PreparedStatement smnt = db.getConnection().prepareStatement(
+                "SELECT * " +
+                "FROM forum NATURAL JOIN thread " +
+                "WHERE category=?")) {
+            smnt.setString(1, category);
+            ResultSet rs = smnt.executeQuery();
+
+            List<Post> posts = new ArrayList<>();
+
+            while (rs.next()) {
+                Post post = new Post(
+                        rs.getString("title"),
+                        rs.getString("body"),
+                        rs.getInt("user_id"),
+                        rs.getDate("created"),
+                        rs.getInt("forum_id")
+                );
+                post.setThread_id(rs.getInt("thread_id"));
+                post.setCategory(rs.getString("category"));
+                posts.add(post);
+            }
+            return ResponseEntity.ok(posts);
+        } catch (SQLException e) {
+            return db.log(e);
+        }
+    }
+
+    public ResponseEntity<String> createPost(String category, Post post) {
+        DatabaseService db = DatabaseService.getInstance();
+
+        try (PreparedStatement smnt = db.getConnection().prepareStatement(
+                "INSERT INTO thread (title,body,user_id,created,forum_id) " +
+                "VALUES (?,?,?,?,(SELECT forum_id FROM forum WHERE category=?))")) {
+            smnt.setString(1, post.getTitle());
+            smnt.setString(2, post.getBody());
+            smnt.setInt(3, post.getUser_id());
+            post.setCreated(new Date());
+            smnt.setTimestamp(4, new Timestamp(post.getCreated().getTime()));
+            smnt.setString(5, category);
+            smnt.execute();
+
+            if (smnt.getUpdateCount() == 1) {
+                return ResponseEntity.ok("Successfully created post.");
+            }
+        } catch (SQLException e) {
+            return db.log(e);
+        }
+
+        return ResponseEntity.internalServerError().body("Failed to execute query.");
+    }
 }
