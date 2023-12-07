@@ -12,6 +12,7 @@ import AddBook from "./Admin/AddBook";
 import Browse from "./Media/Browse";
 import View from "./Media/View";
 import Profile from "./Account/Profile";
+import Reviews from "./Media/Reviews";
 import ErrorPage from './ErrorPage';
 
 export default function App() {
@@ -33,6 +34,7 @@ export default function App() {
                 <Route path='shows' element={<Browse/>}/>
                 <Route path='view/:mediaType/:mediaId' element={<View/>}/>
                 <Route path='view/profile/:userId' element={<Profile/>}/>
+                <Route path='reviews/:mediaType/:mediaId' element={<Reviews/>}></Route>
                 <Route path='*' element={<ErrorPage/>}/>
             </Routes>
         </Router>

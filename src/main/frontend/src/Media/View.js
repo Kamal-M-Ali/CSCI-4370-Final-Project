@@ -184,7 +184,7 @@ export default function View(props) {
                     </div>
                     : <></>}
                 {media ?
-                    <Link className='view-btn-container' to={`/reviews/${mediaType}/${media.media_id}`} state={{ reviews: reviews }}>
+                    <Link className='view-btn-container' to={`/reviews/${mediaType}/${media.media_id}`} state={{ media: media.title, reviews: reviews }}>
                         <button className='view-btn'>View Critic Reviews</button>
                     </Link>
                     : <></>}
