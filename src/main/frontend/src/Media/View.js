@@ -98,7 +98,7 @@ export default function View(props) {
         const date = new Date();
         let comment = {
             body: e.target.body.value,
-            profile_name: sessionStorage.getItem('profileName'),
+            extra: sessionStorage.getItem('profileName'),
             media_id: media.media_id,
             user_id: sessionStorage.getItem('userId'),
             created: 'yyyy-mm-dd'

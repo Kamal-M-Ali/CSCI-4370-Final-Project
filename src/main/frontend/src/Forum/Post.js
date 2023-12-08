@@ -31,7 +31,7 @@ export default function Post() {
         const date = new Date();
         let comment = {
             body: e.target.body.value,
-            profile_name: sessionStorage.getItem('profileName'),
+            extra: sessionStorage.getItem('profileName'),
             thread_id: post.thread_id,
             user_id: sessionStorage.getItem('userId'),
             created: 'yyyy-mm-dd'
