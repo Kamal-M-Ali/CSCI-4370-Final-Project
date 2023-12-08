@@ -14,9 +14,17 @@ export default function Navigation(props)
 
     return (
         <div className='nav-bar'>
-            <p className='home-button'>
-                <Link className='nav-link' to='/'>Home</Link>
-            </p>
+            <ul>
+                <li key='home'>
+                    <Link className='nav-link' to='/'>Home</Link>
+                </li>
+                {loggedIn ?
+                    <li key='admin'>
+                        <Link className='nav-link' to='/admin'>Admin</Link>
+                    </li>
+                    : <li></li>}
+            </ul>
+
             <ul>
                 <li key='games'>
                     <Link className='nav-link' to='/games' state={{mediaType: 'game'}}>Games</Link>

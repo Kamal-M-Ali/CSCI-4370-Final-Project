@@ -1,10 +1,12 @@
 import './Admin.css';
 import { Link } from 'react-router-dom';
 import Card from '../Card';
+import Navigation from "../Navigation";
 
 export default function Admin() {
 
     return (<>
+        <Navigation/>
         <div className='banner'>
             <h1>Admin Panel</h1>
         </div>

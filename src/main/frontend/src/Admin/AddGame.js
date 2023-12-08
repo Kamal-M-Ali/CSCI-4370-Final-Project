@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import axios from 'axios';
 import Card from '../Card';
+import Navigation from "../Navigation";
 
 export default function AddBook() {
     const navigate = useNavigate();
@@ -35,6 +36,7 @@ export default function AddBook() {
     }
 
     return (<>
+        <Navigation/>
         {(confirmOpen) ?
             <Card className='confirm-wnd'>
                 <h1>Game Added</h1>
